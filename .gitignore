@@ -1,2 +1,7 @@
 *.gif
 *.jpeg
+*.mp4
+*.png
+*.task
+.vscode
+*.jpg
