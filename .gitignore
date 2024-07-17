@@ -9,4 +9,4 @@
 __pycache__
 _models
 *.pickle
-mobilenet_v1_102
+mobilenet_v1_101
