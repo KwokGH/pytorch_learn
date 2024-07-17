@@ -5,3 +5,8 @@
 *.task
 .vscode
 *.jpg
+*.pkl
+__pycache__
+_models
+*.pickle
+mobilenet_v1_102
