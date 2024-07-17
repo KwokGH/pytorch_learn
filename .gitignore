@@ -10,3 +10,5 @@ __pycache__
 _models
 *.pickle
 mobilenet_v1_101
+*.pth
+*.pk
