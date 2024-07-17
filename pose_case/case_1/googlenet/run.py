@@ -21,8 +21,8 @@ lr = 0.03
 batch_size = 32
 # 'pose_case/bird_photos'
 # 'pose_case/bird_photos'
-image_path = os.path.join(data_path, 'pose_case/wushu')
-save_path = './checkpoints/wushu_model.pth'
+image_path = os.path.join(data_path, 'pose_case/bird_photos')
+save_path = './checkpoints/bird_model.pth'
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 

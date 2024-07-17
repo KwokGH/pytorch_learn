@@ -29,7 +29,7 @@ for param in model.parameters():
 model.fc = nn.Linear(model.fc.in_features, 4)
 # 将模型加载到cpu中
 model = model.to(device=device)
-model.load_state_dict(torch.load('./checkpoints/wushu_model.pth'))
+model.load_state_dict(torch.load('./checkpoints/bird_model.pth'))
 
 # 加载索引与标签映射字典
 with open('class_dict.pk', 'rb') as f:
@@ -43,7 +43,7 @@ data_transform = transforms.Compose(
 
 # 图片路径
 # 'pose_case/bird_photos/Cockatoo/030.jpg'
-img_path = os.path.join(data_path,'pose_case/wushu/gongbu/1.png')
+img_path = os.path.join(data_path,'pose_case/bird_photos/Black Throated Bushtiti/005.jpg')
 
 # 打开图像
 img = Image.open(img_path)
@@ -51,8 +51,8 @@ img = Image.open(img_path)
 # 对图像进行变换
 img = data_transform(img)
 
-plt.imshow(img.permute(1,2,0))
-plt.show()
+# plt.imshow(img.permute(1,2,0))
+# plt.show()
 
 # 将图像升维，增加batch_size维度
 img = torch.unsqueeze(img, dim=0)
