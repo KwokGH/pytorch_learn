@@ -1,0 +1,61 @@
+{
+    "name": "少年连环拳",
+    "root_path":"D:\\project\\machineL\\data\\mediapipe",
+    "model_path":"pose_landmarker_heavy.task",
+    "score":10,
+    "rules": [{
+        "id": "2",
+        "path":"2.mp4",      
+        "category":"gongbu",  
+        "rule": [
+            {
+                "type":"limit_angle",                
+                "point":[24,26,28],
+                "max":135,
+                "min":85
+            },
+            {
+                "type":"angle",
+                "point":[23,25,27],
+                "max":180,
+                "min":160
+            },
+            {
+                "type":"height",
+                "point":[30,32],
+                "max":5,
+                "min":0
+            }
+        ]   
+    },{
+        "id": "3",
+        "path":"3.mp4",      
+        "category":"tantui",
+        "rule": [
+            {
+                "type":"limit_height",
+                "point":[30,25],
+                "max":5,
+                "min":0
+            },
+            {
+                "type":"angle",
+                "point":[24,26,28],
+                "max":190,
+                "min":160
+            },
+            {
+                "type":"angle",
+                "point":[26,28,32],
+                "max":180,
+                "min":95
+            },
+            {
+                "type":"height",
+                "point":[29,30],
+                "max":5,
+                "min":-5
+            }
+        ]   
+    }]
+}
