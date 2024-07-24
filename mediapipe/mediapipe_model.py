@@ -137,10 +137,11 @@ def process_angle_rule(rule_item,p1,p2,p3):
   min = rule_item['min']
   get = calculate_angle(p1, p2, p3)
 
-  if get>=min and get<=max:
-      score = 1
-  else:
-      score = 0
+  score = proximity_to_interval(get,min,max)
+  # if get>=min and get<=max:
+  #     score = 1
+  # else:
+  #     score = 0
 
   return score,get
 
@@ -152,28 +153,67 @@ def process_height_rule(rule_item,p1,p2,p3):
   y2 = p2[1]
   get = y1-y2
 
-  if get>=min and get<=max:
-      score = 1
-  else:
-      score = 0
+  score = proximity_to_interval(get,min,max)
+  # if get>=min and get<=max:
+  #     score = 1
+  # else:
+  #     score = 0
+
+  return score,get
+
+def proximity_to_interval(value, min_val, max_val):
+    if min_val > max_val:
+        raise ValueError("min_val should not be greater than max_val")
+
+    if min_val <= value <= max_val:
+        return 1.0  # 值在区间内，返回1
+
+    # 计算值到区间最近边界的距离
+    distance_to_closest_bound = min(abs(value - min_val), abs(value - max_val))
+    interval_range = max_val - min_val
+    
+    # 归一化距离，使其返回值接近1
+    normalized_distance = distance_to_closest_bound / interval_range
+    proximity = 1 / (1 + normalized_distance)  # 将距离映射到接近1的值
+
+    return proximity
+
+def process_weight_rule(rule_item,p1,p2,p3):
+  score = 0
+  max = rule_item['max']
+  min = rule_item['min']
+  x1 = p1[0]
+  x2 = p2[0]
+  get = x1-x2
+
+  score = proximity_to_interval(get,min,max)
+  # if get>=min and get<=max:
+  #     score = 1
+  # else:
+  #     score = 0
 
   return score,get
 
 rule_func = {
-   'limit_angle':process_angle_rule,
-   "limit_height":process_height_rule,
+  #  'limit_angle':process_angle_rule,
+  #  "limit_height":process_height_rule,
    "angle":process_angle_rule,
-   "height":process_height_rule
+   "height":process_height_rule,
+   "weight":process_weight_rule
 }
 
-def process_rules(numpy_image,rule,landmarker):
-    # 姿势特征点检测
+def get_video_landmarker(numpy_image,landmarker):
+   # 姿势特征点检测
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=numpy_image)
-    detection_result = landmarker.detect(mp_image)
-    pose_landmarks_list = detection_result.pose_landmarks
+    detection_result = landmarker.detect(mp_image)    
+    # detection_result.pose_world_landmarks    
+    return detection_result.pose_landmarks[0]
+
+def process_rules(numpy_image,rule,detection_result):
+    # 姿势特征点检测
+    pose_landmarks = detection_result
     image_height, image_width, _ = numpy_image.shape
-        
-    pose_landmarks = pose_landmarks_list[0]  
+
     total_score = dict()
     total_score["limit_angle"]=[]
     total_score["limit_height"]=[]

@@ -1,61 +1,84 @@
 {
     "name": "少年连环拳",
     "root_path":"D:\\project\\machineL\\data\\mediapipe",
-    "model_path":"pose_landmarker_heavy.task",
-    "score":10,
+    "model_path":"pose_landmarker_heavy.task",    
     "rules": [{
         "id": "2",
-        "path":"2.mp4",      
-        "category":"gongbu",  
+        "video_ids":["2"],      
+        "category":"gongbu", 
         "rule": [
-            {
-                "type":"limit_angle",                
+            [{
+                "id":"21",
+                "type":"angle",                
                 "point":[24,26,28],
                 "max":135,
-                "min":85
-            },
-            {
+                "min":85,
+                "desc":"前腿大腿不得高于45度"
+            },{
+                "id":"22",
                 "type":"angle",
                 "point":[23,25,27],
                 "max":180,
-                "min":160
-            },
-            {
+                "min":160,
+                "desc":"后腿不能弯曲"
+            },{
+                "id":"23",
                 "type":"height",
                 "point":[30,32],
                 "max":5,
-                "min":0
-            }
-        ]   
+                "min":0,
+                "desc":"后脚脚跟离地"
+            }]
+     ]   
     },{
         "id": "3",
-        "path":"3.mp4",      
+        "video_ids":["3"],      
         "category":"tantui",
         "rule": [
-            {
-                "type":"limit_height",
+            [{
+                "id":"31",
+                "type":"height",
                 "point":[30,25],
-                "max":5,
-                "min":0
-            },
-            {
+                "max":20,
+                "min":-1,
+                "desc":"屈蹬腿脚跟需高于支撑腿膝盖高度"
+            },{
+                "id":"32",
+                "type":"height",
+                "point":[29,31],
+                "max":10,
+                "min":-10,
+                "desc":"支撑脚脚跟不能离地"
+            },{
+                "id":"33",
+                "type":"weight",
+                "point":[30,29],
+                "max":10,
+                "min":-10,
+                "desc":"两个脚的脚跟在纵向上相近"
+            }],
+            [{
+                "id":"34",
                 "type":"angle",
                 "point":[24,26,28],
                 "max":190,
-                "min":160
-            },
-            {
+                "min":160,
+                "desc":"弹腿要尽量伸直"
+            },{
+                "id":"35",
                 "type":"angle",
                 "point":[26,28,32],
                 "max":180,
-                "min":95
-            },
-            {
+                "min":95,
+                "desc":"弹的发力方式判断"
+            },{
+                "id":"8",
                 "type":"height",
-                "point":[29,30],
+                "point":[29,31],
                 "max":5,
-                "min":-5
-            }
-        ]   
+                "min":-5,
+                "desc":"支撑脚脚跟不能离地"
+            }]
+        ]  
     }]
 }
