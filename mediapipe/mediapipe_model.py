@@ -62,6 +62,7 @@ def initModel(model_path):
     landmarker = PoseLandmarker.create_from_options(options)
     return landmarker
 
+# 坐标角度计算
 def calculate_angle(a, b, c):
     a = np.array(a)  # 第一个点
     b = np.array(b)  # 第二个点（角的顶点）
@@ -72,6 +73,23 @@ def calculate_angle(a, b, c):
     if angle > 180.0:
         angle = 360.0 - angle
     return angle
+# 向量角度计算
+def calculate_angle_between_points(p1, p2, p3):
+    # 计算向量
+    vector_a = np.array(p1) - np.array(p2)
+    vector_b = np.array(p3) - np.array(p2)
+    # 计算点积
+    dot_product = np.dot(vector_a, vector_b)
+    # 计算向量的模长
+    norm_a = np.linalg.norm(vector_a)
+    norm_b = np.linalg.norm(vector_b)
+    # 计算 cos(theta)
+    cos_theta = dot_product / (norm_a * norm_b)
+    # 计算角度（弧度）
+    angle_rad = np.arccos(cos_theta)
+    # 转换为角度（度）
+    angle_deg = np.degrees(angle_rad)
+    return angle_deg
 # 绘制线条
 def draw_landmarks_on_image(rgb_image, detection_result,keyspointsAngle):
   pose_landmarks_list = detection_result.pose_landmarks
@@ -207,6 +225,9 @@ def get_video_landmarker(numpy_image,landmarker):
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=numpy_image)
     detection_result = landmarker.detect(mp_image)    
     # detection_result.pose_world_landmarks    
+    # print(111111,detection_result)
+    if len(detection_result.pose_landmarks)<=0:
+       return []
     return detection_result.pose_landmarks[0]
 
 def process_rules(numpy_image,rule,detection_result):
