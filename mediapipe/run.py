@@ -23,16 +23,7 @@ def main():
     root_path = config["root_path"]
     model_path = os.path.join(root_path, config["model_path"])
     video_folder = "D:\project\machineL\data\mediapipe\shaonian\\temp"# "D:\project\machineL\data\mediapipe\\07\\07"# #os.path.join(root_path, "")
-    # 重命名文件
-    # i = 0
-    # for file_name in os.listdir(video_folder):      
-    #     video_path = os.path.join(video_folder, file_name)
-    #     file_name_no_ext,ext = os.path.splitext(os.path.basename(file_name))
-    #     new_video_path = os.path.join(video_folder, str(i)+ext)
-    #     i = i+1
-    #     print(new_video_path)
-    #     os.rename(video_path, new_video_path)
-    # return 
+  
     # 提取规则
     rules = list(config["rules"])
     # 确定好每个视频所需要的规则
@@ -58,7 +49,11 @@ def main():
         for i in range(rule_count):
             frame_temp[i]=0
 
-        for frameItem in video_item:                        
+        for idx,frameItem in enumerate(video_item):
+            # 前后的帧不识别
+            if len(video_item)>20:                         
+                if idx<5 or idx >len(video_item)-5:
+                    continue
             for index,scores in enumerate(frameItem['frame_rule_score']):                                
                 temp_score = 0
                                 
@@ -66,7 +61,7 @@ def main():
                     # temp_score.append((scoreItem['val'],scoreItem['score']))
                     temp_score = temp_score + scoreItem['score']
 
-                if frame_temp[index]<temp_score:
+                if frame_temp[index]<=temp_score:
                     # print("temp_score",temp_score)
                     frame_temp[index] = temp_score
                     best[file_id][index] = frameItem
@@ -75,88 +70,39 @@ def main():
 
 
                 # print("index:",frameItem['frame_index'],"score:",temp_score)
-    # 以视频为单位整理分数 
+    # 以视频为单位整理分数
+    # 统计
+    standard_scores = dict()
+    err_scores_count = 0
     output_frame_folder=os.path.join(root_path,"frame")
     for idx,fileItem in best.items():
         print("视频编号：%s. " % (idx))
+        err_flage = False
         for idx2,frameItem in fileItem.items():
             frame_index = frameItem["frame_index"]
             print("视频帧索引：%s. " % (frame_index)) 
-            scores1 = frameItem['frame_rule_score']   
+            scores1 = frameItem['frame_rule_score']
             scores2 = scores1[idx2]
-            frame = frameItem['frame'] 
+            frame = frameItem['frame']
             frame_filename = os.path.join(output_frame_folder, f'video_{idx}_frame_{frame_index}.jpg') 
-            print(frame_filename)
-            cv2.imwrite(frame_filename, frame) 
+             
+            cv2.imwrite(frame_filename, frame)
+            
             for scoreItem in scores2:
-                print("类别：%s, 规则：%s, 值: %s, 得分：%s" % (scoreItem['category'],scoreItem['rule'],scoreItem['val'],scoreItem['score']))   
-                
-                # if len(scores)>=i+1:                    
-                #     for scoreItem in scores[i]:
-                #         print("类别：%s, 规则：%s,得分：%s " % (scoreItem['category'],scoreItem['rule'],scoreItem['score']))   
-            # for scores in frameItem['frame_rule_score']:
-            #     for scoreItem in scores:
-            #         print("类别：%s, 规则：%s,得分：%s " % (scoreItem['category'],scoreItem['rule'],scoreItem['score']))                    
-            # cv2.imshow('Image',frameItem['frame'])
-            # cv2.waitKey(0)  # 等待直到有键盘事件
-            # cv2.destroyAllWindows()
-    # 以种类为单位整理分数
-    # category_map = dict()
-    # for idx,fileItem in best.items():
-    #     for idx2,frameItem in fileItem.items():
-    #         max_score = 0
-    #         group_score_list = []
-    #         for scores in frameItem['frame_rule_score']:
-    #             # 由于规则组中的所有规则都会对一个帧进行计算，所以分种类取得时候仅仅取分最高得那一组                
-    #             group_score=0                
-    #             for scoreItem in scores:
-    #                 group_score = group_score+scoreItem['score']
-    #                 group_score_list.append({
-    #                     "score":scoreItem,
-    #                     # "frame":frameItem['frame'],
-    #                 })
-                
-    #             if max_score<group_score:
-    #                 max_score = group_score
-    #                 if scoreItem['category'] not in category_map:
-    #                     category_map[scoreItem['category']] = []
-    #                 category_map[scoreItem['category']] = group_score_list
+                s = scoreItem['score']
+                r = scoreItem['rule']
+                c = scoreItem['category']
+                if "score_type" in r:                    
+                    if r["score_type"]=='1' and s<0.8:
+                        standard_scores[c] = 1
+                    elif r["score_type"]=='2' and s<0.8:
+                        err_flage = True
+                print("类别：%s, 规则：%s, 值: %s, 得分：%s" % (c,r,scoreItem['val'],s))   
 
+        if err_flage:           
+            err_scores_count = err_scores_count+1
 
-    # print(len(category_map["mabu"]),len(category_map["gongbu"]),len(category_map["tantui"]),len(category_map["dengtui"]))
-    # 动作规格扣分， 出现四个规格错误扣3.1分，最多扣3.1分
-    # spec_count_map = dict()
-    # # 动作错误扣分，累计扣分
-    # err_count_map = dict()
-    # for key,item in category_map.items():
-    #     for scoreItem in item:
-    #         scoreInfo = scoreItem['score']
-    #         if "score_type" not in scoreInfo['rule']:
-    #             continue
-            
-    #         score_type = scoreInfo['rule']['score_type']
-    #         score = scoreInfo['score']
-         
-    #         if score_type=='1':
-    #             print("spec",score)
-    #             if score!=1.0:
-    #                 if key not in spec_count_map:
-    #                     spec_count_map[key] = 1                    
-    
-            
-    #         if score_type=='2':
-    #             print("err",score)
-    #             if score!=1.0:                   
-    #                 if key not in err_count_map:
-    #                     err_count_map[key] = 1
-    #                 else:
-    #                     err_count_map[key] = err_count_map[key]+1
-    
-    
-    # print(spec_count_map)
-    # print(err_count_map)
-
-
+    print("标准：%d, 动作错误：%d" % (len(standard_scores),err_scores_count))
     
 
                              
@@ -171,21 +117,13 @@ def getData(model_path,video_folder,rule_video_map):
     # 遍历读取视频，解析出视频中每一帧的坐标
     # 遍历视频文件 
     listdir = os.listdir(video_folder)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=34) as executor:
-        futures = []
-        for file_name in listdir:
-            # 如果视频没配置规则，则不对视频处理
-            file_name_no_ext,_ = os.path.splitext(os.path.basename(file_name))
-            if file_name_no_ext not in rule_video_map:
-                continue
-            
-            futures.append(executor.submit(process_video, data_list, video_folder,file_name,landmarker))
+    for file_name in listdir:
+        # 如果视频没配置规则，则不对视频处理
+        file_name_no_ext,_ = os.path.splitext(os.path.basename(file_name))
+        if file_name_no_ext not in rule_video_map:
+            continue
         
-        # 等待所有线程完成
-        concurrent.futures.wait(futures)
-        for future in futures:
-            if future.exception() is not None:
-                print(f"Error occurred: {future.exception()}")
+        process_video(data_list, video_folder,file_name,landmarker)
         
     
     return data_list
@@ -200,27 +138,29 @@ def process_video(data_list,video_folder,file_name,landmarker):
     print(f"Processing video : {video_path}")
     i = 0
     cap = cv2.VideoCapture(video_path)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 20)
     # 检查视频是否成功打开
     if not cap.isOpened():
         print(f"Error: Could not open video {video_path}.")
         return
     while True:
         ret, frame = cap.read()
-    
+        i = i + 1  
         # 检查是否成功读取到帧
         if not ret:
-            break
-        
+            break           
+
         # 在这里处理帧
         detection_result = mediapipe_model.get_video_landmarker(frame,landmarker)
         if len(detection_result)<=0:
+            print("没有结果",i)
             continue
         detection_result_list.append({
             "detection_result":detection_result,
             "frame":frame,
             "frame_index":i
         })
-        i = i + 1
+          
     file_name_no_ext,_ = os.path.splitext(os.path.basename(file_name))
     data_list.append({
         "file_id":file_name_no_ext,
@@ -248,6 +188,7 @@ def process_data_list(data,rule_video_map):
             pose_landmarks = detection_item["detection_result"]
             frame = detection_item["frame"]
             image_height, image_width, _ = frame.shape
+            # print(image_height,image_width)
            
             frame_index = detection_item["frame_index"]
             frame_rule_score = []
@@ -269,14 +210,14 @@ def process_data_list(data,rule_video_map):
                         b = points[1]
                         c = points[2]                        
 
-                    p1 = [pose_landmarks[a].x * image_width,
-                        pose_landmarks[a].y* image_height,
+                    p1 = [pose_landmarks[a].x,
+                        pose_landmarks[a].y,
                         0]
-                    p2 = [pose_landmarks[b].x* image_width,
-                            pose_landmarks[b].y* image_height,
+                    p2 = [pose_landmarks[b].x,
+                            pose_landmarks[b].y,
                             0]
-                    p3 = [pose_landmarks[c].x* image_width,
-                            pose_landmarks[c].y* image_height,
+                    p3 = [pose_landmarks[c].x,
+                            pose_landmarks[c].y,
                             0]
                     if c == 0:
                         p3 = [0,0,0]

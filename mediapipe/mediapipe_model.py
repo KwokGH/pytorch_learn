@@ -74,23 +74,23 @@ def calculate_angle(a, b, c):
         angle = 360.0 - angle
     return angle
 # 向量角度计算
-def calculate_angle_between_points(p1, p2, p3):
-    # 计算向量
-    vector_a = np.array(p2) - np.array(p1)
-    vector_b = np.array(p2) - np.array(p3)
-    # 计算点积
-    dot_product = np.dot(vector_a, vector_b)
-    # 计算向量的模长
-    norm_a = np.linalg.norm(vector_a)
-    norm_b = np.linalg.norm(vector_b)
-    # 计算 cos(theta)
-    cos_theta = dot_product / (norm_a * norm_b)
-    # 计算角度（弧度）
-    angle_rad = np.arccos(cos_theta)
-    # 转换为角度（度）
-    angle_deg = np.degrees(angle_rad)
+# def calculate_angle_between_points(p1, p2, p3):
+#     # 计算向量
+#     vector_a = np.array(p2) - np.array(p1)
+#     vector_b = np.array(p2) - np.array(p3)
+#     # 计算点积
+#     dot_product = np.dot(vector_a, vector_b)
+#     # 计算向量的模长
+#     norm_a = np.linalg.norm(vector_a)
+#     norm_b = np.linalg.norm(vector_b)
+#     # 计算 cos(theta)
+#     cos_theta = dot_product / (norm_a * norm_b)
+#     # 计算角度（弧度）
+#     angle_rad = np.arccos(cos_theta)
+#     # 转换为角度（度）
+#     angle_deg = np.degrees(angle_rad)
 
-    return angle_deg
+#     return angle_deg
 # 绘制线条
 def draw_landmarks_on_image(rgb_image, detection_result,keyspointsAngle):
   pose_landmarks_list = detection_result.pose_landmarks
@@ -154,7 +154,7 @@ def process_angle_rule(rule_item,p1,p2,p3):
   score = 0
   max = rule_item['max']
   min = rule_item['min']
-  get = calculate_angle_between_points(p1, p2, p3) 
+  get = calculate_angle(p1, p2, p3) 
 
   score = proximity_to_interval(get,min,max)
   # if get>=min and get<=max:
