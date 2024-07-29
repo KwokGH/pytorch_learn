@@ -22,7 +22,7 @@ def main():
     name = config["name"]
     root_path = config["root_path"]
     model_path = os.path.join(root_path, config["model_path"])
-    video_folder = "D:\project\machineL\data\mediapipe\shaonian\\temp"#os.path.join(root_path, "")
+    video_folder = "D:\project\machineL\data\mediapipe\shaonian\\temp"# "D:\project\machineL\data\mediapipe\\07\\07"# #os.path.join(root_path, "")
     # 重命名文件
     # i = 0
     # for file_name in os.listdir(video_folder):      
@@ -32,18 +32,20 @@ def main():
     #     i = i+1
     #     print(new_video_path)
     #     os.rename(video_path, new_video_path)
-
-    
-
-    data = getData(model_path,video_folder)
-
+    # return 
     # 提取规则
     rules = list(config["rules"])
-    result = process_data_list(data,rules)
-    #             "frame_rule_score":frame_rule_score,
-    #             "frame_index":frame_index,
-    #             "frame":frame,
-    #             "pose_landmarks":pose_landmarks
+    # 确定好每个视频所需要的规则
+    rule_video_map = dict()
+    for item in rules:
+        for video_id in item["video_ids"]:
+            rule_video_map[video_id] = item
+    
+    # 处理视频获取数据
+    data = getData(model_path,video_folder,rule_video_map)
+
+    # 处理数据，获取分数
+    result = process_data_list(data,rule_video_map)
 
     best = dict()
     for file_id,video_item in result.items():
@@ -73,15 +75,21 @@ def main():
 
 
                 # print("index:",frameItem['frame_index'],"score:",temp_score)
-    # 以视频为单位整理分数               
+    # 以视频为单位整理分数 
+    output_frame_folder=os.path.join(root_path,"frame")
     for idx,fileItem in best.items():
         print("视频编号：%s. " % (idx))
         for idx2,frameItem in fileItem.items():
-            print("视频帧索引：%s. " % (frameItem["frame_index"])) 
+            frame_index = frameItem["frame_index"]
+            print("视频帧索引：%s. " % (frame_index)) 
             scores1 = frameItem['frame_rule_score']   
             scores2 = scores1[idx2]
+            frame = frameItem['frame'] 
+            frame_filename = os.path.join(output_frame_folder, f'video_{idx}_frame_{frame_index}.jpg') 
+            print(frame_filename)
+            cv2.imwrite(frame_filename, frame) 
             for scoreItem in scores2:
-                print("类别：%s, 规则：%s,得分：%s " % (scoreItem['category'],scoreItem['rule'],scoreItem['score']))   
+                print("类别：%s, 规则：%s, 值: %s, 得分：%s" % (scoreItem['category'],scoreItem['rule'],scoreItem['val'],scoreItem['score']))   
                 
                 # if len(scores)>=i+1:                    
                 #     for scoreItem in scores[i]:
@@ -155,18 +163,22 @@ def main():
 
 
 
-def getData(model_path,video_folder):
+def getData(model_path,video_folder,rule_video_map):
       # 加载模型
     landmarker = mediapipe_model.initModel(model_path)   
     data_list = []
 
     # 遍历读取视频，解析出视频中每一帧的坐标
     # 遍历视频文件 
-    # video_folder = os.path.join(root_path, "")
     listdir = os.listdir(video_folder)
     with concurrent.futures.ThreadPoolExecutor(max_workers=34) as executor:
         futures = []
         for file_name in listdir:
+            # 如果视频没配置规则，则不对视频处理
+            file_name_no_ext,_ = os.path.splitext(os.path.basename(file_name))
+            if file_name_no_ext not in rule_video_map:
+                continue
+            
             futures.append(executor.submit(process_video, data_list, video_folder,file_name,landmarker))
         
         # 等待所有线程完成
@@ -216,13 +228,7 @@ def process_video(data_list,video_folder,file_name,landmarker):
         "detection_result":copy.deepcopy(detection_result_list)
     })    
 
-def process_data_list(data,rules):
-    # 确定好每个视频所需要的规则
-    rule_video_map = dict()
-    for item in rules:
-        for video_id in item["video_ids"]:
-            rule_video_map[video_id] = item
-
+def process_data_list(data,rule_video_map):    
     # 筛选出最好的视频帧
     video_frame_score_list = dict()
     # 处理数据，按照规则处理视频
@@ -242,6 +248,7 @@ def process_data_list(data,rules):
             pose_landmarks = detection_item["detection_result"]
             frame = detection_item["frame"]
             image_height, image_width, _ = frame.shape
+           
             frame_index = detection_item["frame_index"]
             frame_rule_score = []
             for rule_group in video_rule:   
@@ -249,6 +256,8 @@ def process_data_list(data,rules):
                 for group_item in rule_group:
                     
                     points = group_item['point']
+                    
+
                     p1,p2,p3 = 0,0,0
                     a,b,c = 0,0,0
 
@@ -261,11 +270,14 @@ def process_data_list(data,rules):
                         c = points[2]                        
 
                     p1 = [pose_landmarks[a].x * image_width,
-                        pose_landmarks[a].y* image_height]
+                        pose_landmarks[a].y* image_height,
+                        0]
                     p2 = [pose_landmarks[b].x* image_width,
-                            pose_landmarks[b].y* image_height]
+                            pose_landmarks[b].y* image_height,
+                            0]
                     p3 = [pose_landmarks[c].x* image_width,
-                            pose_landmarks[c].y* image_height]
+                            pose_landmarks[c].y* image_height,
+                            0]
                     if c == 0:
                         p3 = [0,0,0]
                     score,val = mediapipe_model.rule_func[group_item['type']](group_item,p1,p2,p3)                    

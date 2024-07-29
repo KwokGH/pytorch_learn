@@ -76,8 +76,8 @@ def calculate_angle(a, b, c):
 # 向量角度计算
 def calculate_angle_between_points(p1, p2, p3):
     # 计算向量
-    vector_a = np.array(p1) - np.array(p2)
-    vector_b = np.array(p3) - np.array(p2)
+    vector_a = np.array(p2) - np.array(p1)
+    vector_b = np.array(p2) - np.array(p3)
     # 计算点积
     dot_product = np.dot(vector_a, vector_b)
     # 计算向量的模长
@@ -89,6 +89,7 @@ def calculate_angle_between_points(p1, p2, p3):
     angle_rad = np.arccos(cos_theta)
     # 转换为角度（度）
     angle_deg = np.degrees(angle_rad)
+
     return angle_deg
 # 绘制线条
 def draw_landmarks_on_image(rgb_image, detection_result,keyspointsAngle):
@@ -134,7 +135,7 @@ def draw_landmarks_on_image(rgb_image, detection_result,keyspointsAngle):
               pose_landmarks[b].y * image_height]
       wrist = [pose_landmarks[c].x * image_width,
               pose_landmarks[c].y * image_height]
-      angle = calculate_angle(shoulder, elbow, wrist)
+      angle = calculate_angle_between_points(shoulder, elbow, wrist)
       cv2.putText(annotated_image, str(int(angle)),
                         tuple(np.multiply(elbow, [1, 1]).astype(int)),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA
@@ -153,7 +154,7 @@ def process_angle_rule(rule_item,p1,p2,p3):
   score = 0
   max = rule_item['max']
   min = rule_item['min']
-  get = calculate_angle(p1, p2, p3)
+  get = calculate_angle_between_points(p1, p2, p3) 
 
   score = proximity_to_interval(get,min,max)
   # if get>=min and get<=max:
