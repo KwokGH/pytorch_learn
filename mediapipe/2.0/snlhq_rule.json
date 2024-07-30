@@ -1,7 +1,6 @@
 {
     "name": "少年连环拳",
-    "root_path":"D:\\project\\machineL\\data\\mediapipe",
-    "model_path":"pose_landmarker_heavy.task",    
+    "root_path":"D:\\project\\machineL\\data\\mediapipe",     
     "rules": [{        
         "video_ids":["5","8","9","12","13","16","22","24"],      
         "category":"gongbu", 
@@ -51,8 +50,7 @@
                 "min":-0.002,
                 "desc":"屈蹬腿脚跟需高于支撑腿膝盖高度",
                 "score_type":"1"
-            },{
-                "id":"33",
+            },{              
                 "type":"weight",
                 "point":[30,29],
                 "max":0.013,
@@ -60,15 +58,13 @@
                 "desc":"两个脚的脚跟在纵向上相近",
                 "score_type":"2"
             }],
-            [{
-                "id":"34",
+            [{                
                 "type":"angle",
                 "point":[24,26,28],
                 "max":190,
                 "min":170,
                 "desc":"弹腿要尽量伸直"
-            },{
-                "id":"35",
+            },{                
                 "type":"angle",
                 "point":[26,28,32],
                 "max":180,
@@ -82,8 +78,7 @@
                 "min":80,
                 "desc":"保证腿是抬起来的"
             }]
-    ]},{
-            "id": "4",
+    ]},{            
             "video_ids":["10","21"],      
             "category":"dengtui",
             "rule": [
@@ -126,24 +121,21 @@
         "video_ids":["25"],      
         "category":"gongbu", 
         "rule": [
-            [{
-                "id":"21",
+            [{                
                 "type":"angle",                
                 "point":[23,25,27],
                 "max":130,
                 "min":85,
                 "desc":"前腿大腿不得高于45度",
                 "score_type":"1"
-            },{
-                "id":"22",
+            },{                
                 "type":"angle",
                 "point":[24,26,28],
                 "max":180,
                 "min":160,
                 "desc":"后腿不能弯曲",
                 "score_type":"2"
-            },{
-                "id":"23",
+            },{                
                 "type":"height",
                 "point":[29,31],
                 "max":0.007,
@@ -181,8 +173,7 @@
                 "min":160,
                 "desc":"后腿不能弯曲",
                 "score_type":"2"
-            },{
-                "id":"23",
+            },{                
                 "type":"height",
                 "point":[29,31],
                 "max":0.007,
@@ -202,29 +193,25 @@
                 "min":160,
                 "desc":"对应的手臂伸直"
             }]
-    ]},{
-        "id": "1",
+    ]},{        
         "video_ids":["2","18","20","26","29","31"],      
         "category":"gongbu", 
         "rule": [
-            [{
-                "id":"21",
+            [{                
                 "type":"angle",                
                 "point":[23,25,27],
                 "max":130,
                 "min":85,
                 "desc":"前腿大腿不得高于45度",
                 "score_type":"1"
-            },{
-                "id":"22",
+            },{                
                 "type":"angle",
                 "point":[24,26,28],
                 "max":180,
                 "min":160,
                 "desc":"后腿不能弯曲",
                 "score_type":"2"
-            },{
-                "id":"23",
+            },{                
                 "type":"height",
                 "point":[29,31],
                 "max":0.007,
@@ -237,16 +224,14 @@
                 "max":190,
                 "min":160,
                 "desc":"对应的手臂伸直"
-            },{
-                "id":"23",
+            },{                
                 "type":"height",
                 "point":[12,16],
                 "max":0.013,
                 "min":-0.013,
                 "desc":"对应的手臂水平"
             }]
-    ]},{
-        "id": "2",
+    ]},{        
         "video_ids":["19","23","28","33"],      
         "category":"mabu", 
         "rule": [
@@ -265,36 +250,31 @@
                 "desc":"左腿大腿不得高于某一范围",
                 "score_type":"1"
             }]
-    ]},{
-        "id": "3",
+    ]},{        
         "video_ids":["27","32","6"],      
         "category":"tantui",
         "rule": [
-            [{
-                "id":"31",
+            [{                
                 "type":"height",
                 "point":[29,26],
                 "max":0.027,
                 "min":-0.0013,
                 "desc":"屈蹬腿脚跟需高于支撑腿膝盖高度",
                 "score_type":"1"
-            },{
-                "id":"33",
+            },{                
                 "type":"weight",
                 "point":[30,29],
                 "max":0.008,
                 "min":-0.008,
                 "desc":"两个脚的脚跟在纵向上相近"
             }],
-            [{
-                "id":"34",
+            [{                
                 "type":"angle",
                 "point":[23,25,27],
                 "max":190,
                 "min":170,
                 "desc":"弹腿要尽量伸直"
-            },{
-                "id":"35",
+            },{                
                 "type":"angle",
                 "point":[25,27,31],
                 "max":180,
@@ -308,8 +288,7 @@
                 "min":80,
                 "desc":"保证腿是抬起来的"
             }]
-    ]},{
-            "id": "4",
+    ]},{            
             "video_ids":["14","17"],      
             "category":"dengtui",
             "rule": [

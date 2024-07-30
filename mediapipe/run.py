@@ -15,7 +15,7 @@ args = vars(ap.parse_args())
 def main():
     config_path = args["config"]
     config = {}
-    # 读取配置文件
+    # 读取配置文件                  9
     with open(config_path, 'r',encoding='utf-8') as file:
         config = json.load(file)
         
