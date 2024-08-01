@@ -10,6 +10,16 @@ class RuleDetail:
         self.desc = desc
         self.score_type = score_type
 
+    def to_dict(self):
+        return {
+            'type': self.type,
+            'point': self.point,
+            'max': self.max,
+            'min': self.min,
+            'desc': self.desc,
+            'score_type': self.score_type
+        }
+
 class Rule:
     def __init__(self, video_ids: List[str], category: str, rule: List[List[RuleDetail]]):
         self.video_ids = video_ids
@@ -22,15 +32,16 @@ class Rule:
         return cls(data['video_ids'], data['category'], rule)
 
 class Config:
-    def __init__(self, name: str, root_path: str, rules: List[Rule]):
+    def __init__(self, name: str,count:str, root_path: str, rules: List[Rule]):
         self.name = name
         self.root_path = root_path
         self.rules = rules
+        self.count = count
 
     @classmethod
     def from_dict(cls, data):
         rules = [Rule.from_dict(rule) for rule in data['rules']]
-        return cls(data['name'], data['root_path'], rules)
+        return cls(data['name'],data['count'], data['root_path'], rules)
 
 def load_json(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:

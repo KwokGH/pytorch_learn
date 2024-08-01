@@ -1,8 +1,9 @@
 {
     "name": "少年连环拳",
-    "root_path":"D:\\project\\machineL\\data\\mediapipe",     
+    "root_path":"D:\\project\\machineL\\data\\mediapipe",
+    "count":35,  
     "rules": [{        
-        "video_ids":["5","8","9","12","13","16","22","24"],      
+        "video_ids":[5,8,9,12,13,16,22,24],      
         "category":"gongbu", 
         "rule": [
             [{
@@ -21,7 +22,7 @@
                 "score_type":"2"
             }]
     ]},{        
-        "video_ids":["4","7","11","15"], 
+        "video_ids":[4,7,11,15], 
         "category":"mabu",
         "rule": [
             [{                
@@ -40,7 +41,7 @@
                 "score_type":"1"
             }]
     ]},{        
-        "video_ids":["3"],      
+        "video_ids":[3],      
         "category":"tantui",
         "rule": [
             [{                
@@ -79,7 +80,7 @@
                 "desc":"保证腿是抬起来的"
             }]
     ]},{            
-            "video_ids":["10","21"],      
+            "video_ids":[10,21],      
             "category":"dengtui",
             "rule": [
                 [{                   
@@ -118,7 +119,7 @@
                     "desc":"保证腿是抬起来的"
                 }]
     ]},{    
-        "video_ids":["25"],      
+        "video_ids":[25],      
         "category":"gongbu", 
         "rule": [
             [{                
@@ -156,7 +157,7 @@
                 "desc":"对应的手臂伸直"
             }]
     ]},{    
-        "video_ids":["30"],      
+        "video_ids":[30],      
         "category":"gongbu", 
         "rule": [
             [{                
@@ -194,7 +195,7 @@
                 "desc":"对应的手臂伸直"
             }]
     ]},{        
-        "video_ids":["2","18","20","26","29","31"],      
+        "video_ids":[2,18,20,26,29,31],      
         "category":"gongbu", 
         "rule": [
             [{                
@@ -232,7 +233,7 @@
                 "desc":"对应的手臂水平"
             }]
     ]},{        
-        "video_ids":["19","23","28","33"],      
+        "video_ids":[19,23,28,33],      
         "category":"mabu", 
         "rule": [
             [{                
@@ -251,7 +252,7 @@
                 "score_type":"1"
             }]
     ]},{        
-        "video_ids":["27","32","6"],      
+        "video_ids":[27,32,6],      
         "category":"tantui",
         "rule": [
             [{                
@@ -289,7 +290,7 @@
                 "desc":"保证腿是抬起来的"
             }]
     ]},{            
-            "video_ids":["14","17"],      
+            "video_ids":[14,17],      
             "category":"dengtui",
             "rule": [
                 [{                   

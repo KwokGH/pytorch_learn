@@ -10,8 +10,8 @@ class Keypoint:
         self.presence = presence
 
 class Action:
-    def __init__(self, id, label, start, end, keypoints: List[List[Keypoint]]):
-        self.id = id
+    def __init__(self, index, label, start, end, keypoints: List[List[Keypoint]]):
+        self.index = index
         self.label = label
         self.start = start
         self.end = end
@@ -20,7 +20,7 @@ class Action:
     @classmethod
     def from_dict(cls, data):
         keypoints = [[Keypoint(**kp) for kp in kp_list] for kp_list in data['keypoints']]
-        return cls(data['id'], data['label'], data['start'], data['end'], keypoints)
+        return cls(data['index'], data['label'], data['start'], data['end'], keypoints)
 
 
 def load_json(file_path):
@@ -36,7 +36,7 @@ def main():
 
     # 打印加载的数据
     for action in actions:
-        print(f"ID: {action.id}, Label: {action.label}, Start: {action.start}, End: {action.end}")
+        print(f"index: {action.index}, Label: {action.label}, Start: {action.start}, End: {action.end}")
         for kp_list in action.keypoints:
             for kp in kp_list:
                 print(f"  Keypoint - x: {kp.x}, y: {kp.y}, z: {kp.z}, visibility: {kp.visibility}, presence: {kp.presence}")
