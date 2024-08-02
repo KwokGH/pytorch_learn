@@ -1,0 +1,1 @@
+python run.py -p "D:\\project\\machineL\\data\\pose\\video3\\action_6.json" -r snlhq_rule.json -v "D:\project\machineL\data\pose\video3\demo.MOV" -vf "D:\project\machineL\data\pose\video3\frame" -vr "D:\\project\\machineL\\data\\pose\\video3"

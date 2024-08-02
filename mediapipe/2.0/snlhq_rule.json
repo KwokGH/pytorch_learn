@@ -3,7 +3,7 @@
     "root_path":"D:\\project\\machineL\\data\\mediapipe",
     "count":35,  
     "rules": [{        
-        "video_ids":[5,8,9,12,13,16,22,24],      
+        "video_ids":[5,8,12,20,13,16,22,24],      
         "category":"gongbu", 
         "rule": [
             [{
@@ -39,6 +39,18 @@
                 "min":-0.027,
                 "desc":"左腿大腿不得高于某一范围",
                 "score_type":"1"
+            },{                
+                "type":"angle",
+                "point":[24,26,28],
+                "max":155,
+                "min":80,
+                "desc":"右腿形成的角度"
+            },{                
+                "type":"angle",
+                "point":[23,25,27],
+                "max":155,
+                "min":80,
+                "desc":"左腿形成的角度"
             }]
     ]},{        
         "video_ids":[3],      
@@ -86,8 +98,8 @@
                 [{                   
                     "type":"height",
                     "point":[30,26],
-                    "max":0.027,
-                    "min":-0.002,
+                    "max":0.09,
+                    "min":-0.09,
                     "desc":"屈蹬腿脚跟需高于支撑腿膝盖高度",
                     "score_type":"1"
                 },{                    
@@ -195,7 +207,7 @@
                 "desc":"对应的手臂伸直"
             }]
     ]},{        
-        "video_ids":[2,18,20,26,29,31],      
+        "video_ids":[2,9,18,26,29,31],      
         "category":"gongbu", 
         "rule": [
             [{                
@@ -285,8 +297,8 @@
             },{                   
                 "type":"angle",
                 "point":[29,23,24],
-                "max":130,
-                "min":80,
+                "max":180,
+                "min":130,
                 "desc":"保证腿是抬起来的"
             }]
     ]},{            

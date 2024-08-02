@@ -11,9 +11,7 @@ import mediapipe as mp
 
 
 
-def get_video_frame_score_map(pose_list,config):
-    
-    
+def get_video_frame_score_map(pose_list,config):        
     # 以视频为单位，确定某些视频是哪些规则
     video_rules_map: Dict[str, rule_data.Rule]={}
     for item in config.rules:
@@ -30,6 +28,7 @@ def get_video_frame_score_map(pose_list,config):
     for pose_item in pose_list:    
         video_id = pose_item.index    
         video_label = pose_item.label 
+       
         if video_id  not in video_rules_map:
             print(f"未找到视频: {video_id} 的配置的规则")
             continue
@@ -46,7 +45,7 @@ def get_video_frame_score_map(pose_list,config):
             if len(frame_points)<32:
                 continue
             frame_rule_score = []            
-            for rule_list in rule_list_list:                                       
+            for rule_list in rule_list_list:                                                       
                 group_score = [] 
                 for rule_item in rule_list:
                     rule_points = rule_item.point
@@ -61,6 +60,10 @@ def get_video_frame_score_map(pose_list,config):
                         a = rule_points[0]
                         b = rule_points[1]
                         c = rule_points[2]
+                    
+                    # if frame_points[a].presence<=0.999 or frame_points[b].presence<=0.999:
+                    #     continue
+                    
                     p1 = rule_func.Keypoint(
                         frame_points[a].x,
                         frame_points[a].y,
@@ -83,7 +86,9 @@ def get_video_frame_score_map(pose_list,config):
                         "rule_item":rule_item,
                         "category":video_rule.category,
                     })                
-                frame_rule_score.append(group_score)                    
+                frame_rule_score.append(group_score)   
+            if len(frame_rule_score)<=0:
+                print("没有统计到",video_id)   
             video_frame_score_map[video_id].append({
                 "frame_index":frame_index,
                 "frame_rule_score":frame_rule_score,                                
@@ -135,9 +140,9 @@ def print_score(best_score:dict):
                 r = scoreItem['rule_item']
                 c = scoreItem['category']
                                               
-                if r.score_type=='1' and s<0.8:
+                if r.score_type=='1' and s<0.85:
                     standard_scores[c] = 1
-                elif r.score_type=='2' and s<0.8:
+                elif r.score_type=='2' and s<0.85:
                     err_flage = True
                 print("类别：%s, 规则：%s, 值: %s, 得分：%s" % (c,r,scoreItem['val'],s))   
 
@@ -157,6 +162,7 @@ def print_score_file(best_score:dict):
             "视频编号":idx,
         }
         err_flage = False
+        standard_Flage = False
         for idx2,frameItem in fileItem.items():
             frame_file_name = str(idx) 
             frame_index = frameItem["frame_index"]
@@ -177,9 +183,10 @@ def print_score_file(best_score:dict):
                 c = scoreItem['category']
                 val = scoreItem['val']
                                               
-                if r.score_type=='1' and s<0.8:
+                if r.score_type=='1' and s<0.85:
                     standard_scores[c] = 1
-                elif r.score_type=='2' and s<0.8:
+                    standard_Flage=True
+                elif r.score_type=='2' and s<0.85:
                     err_flage = True
                 data[idx][frame_index_key].append({
                     "类别":c,
@@ -190,12 +197,12 @@ def print_score_file(best_score:dict):
                 score_points.append({
                         "point":r.point,                        
                         "类别":c,
-                        "得分":s,
-                        "值":val, 
+                        "score":s,
+                        "value":val, 
                         "video_label":video_label 
                     })
             is_koufen = False
-            if len(standard_scores)>0 or err_flage:
+            if standard_Flage or err_flage:
                 is_koufen = True
             video_frame_map[frame_file_name] = {
                 "index":frame_start_index+frame_index,
@@ -214,7 +221,7 @@ class CustomEncoder(json.JSONEncoder):
             return obj.to_dict()
         
         return super().default(obj)
-def score(pose_list,config):   
+def score(pose_list,config,result_save_path):   
     score_map = get_video_frame_score_map(pose_list,config)
     best_map = get_best_frame_data(score_map)
     
@@ -224,7 +231,8 @@ def score(pose_list,config):
     result_str = "标准出错：%d, 动作错误：%d, 漏做：%d" % (standard_count,err_count,miss_count)
     data["result"] =result_str
     # 将字典保存到 JSON 文件
-    with open('result_data.json', 'w',encoding='utf-8') as json_file:
+    p = os.path.join(result_save_path,'result_data.json')
+    with open(p, 'w',encoding='utf-8') as json_file:
         json.dump(data, json_file,cls=CustomEncoder,ensure_ascii=False, indent=4)
     
     return video_frame_map
@@ -253,6 +261,9 @@ def save_video_frame(video_frame_map,video_path,frame_save_path):
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         annotated_image = draw.draw_landmarks_on_image(mp_image.numpy_view(), frame_points,frame_score_val,is_koufen)
         # 保存帧到本地文件
+        # 检查文件夹是否存在，如果不存在则创建
+        if not os.path.exists(frame_save_path):
+            os.makedirs(frame_save_path)
         frame_path = os.path.join(frame_save_path, 'frame_{}.jpg'.format(file_name))
         cv2.imwrite(frame_path, annotated_image)
     

@@ -26,7 +26,7 @@ def draw_landmarks_on_image(rgb_image, detection_result,frame_score_val,is_koufe
         # 字体设置
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
-    font_color = (255, 255, 255)  # 白色
+    font_color = (0, 0, 255)   # 字体颜色
     thickness = 2
     line_type = cv2.LINE_AA
     line_spacing = 10
@@ -36,6 +36,7 @@ def draw_landmarks_on_image(rgb_image, detection_result,frame_score_val,is_koufe
     
     for item in frame_score_val:
         score_points = item["point"]
+        value = item["value"]
         if len(score_points)<3:
             continue
         a = score_points[0]
@@ -43,9 +44,9 @@ def draw_landmarks_on_image(rgb_image, detection_result,frame_score_val,is_koufe
         c = score_points[2]
         elbow2 = [detection_result[b].x * image_width,
         detection_result[b].y * image_height]
-        cv2.putText(annotated_image, str(int(100)),
+        cv2.putText(annotated_image, str(int(value)),
                             tuple(np.multiply(elbow2, [1, 1]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv2.LINE_AA
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2, cv2.LINE_AA
                             )
     if len(frame_score_val)>0:
         first_item = frame_score_val[0]
